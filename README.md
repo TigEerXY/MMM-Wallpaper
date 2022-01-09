@@ -23,6 +23,18 @@ Configure the module in your `config.js` file.
 
 **Note:** After starting the Mirror, it will take a few seconds before the wallpapers start to appear.
 
+## Updating MMM-Wallpaper
+
+````bash
+cd ~/MagicMirror/modules/MMM-Wallpaper/
+````
+````bash
+sudo git pull
+````
+````bash
+npm install
+````
+
 ## Using the module
 
 To use this module, add it to the modules array in the `config/config.js` file:
