@@ -29,10 +29,18 @@ Configure the module in your `config.js` file.
 cd ~/MagicMirror/modules/MMM-Wallpaper/
 ````
 ````bash
-sudo git pull
+git pull
 ````
 ````bash
 npm install
+````
+
+If you see error:
+Your local changes to the following files would be overwritten by merge:        
+     package-lock.json
+Please commit your changes or stash them before you merge.
+````bash
+git commit -m package-lock.json
 ````
 
 ## Using the module
