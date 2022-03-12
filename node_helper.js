@@ -43,8 +43,8 @@ module.exports = NodeHelper.create({
     console.log(`Starting node helper for: ${self.name}`);
     self.cache = {};
     self.handlers = {};
-    self.firetv = JSON.parse(fs.readFileSync(`${__dirname}/firetv.json`));
-    self.chromecast = JSON.parse(fs.readFileSync(`${__dirname}/chromecast.json`));
+    self.firetv = null;
+    self.chromecast = null;
   },
 
   socketNotificationReceived: function(notification, payload) {
@@ -58,8 +58,6 @@ module.exports = NodeHelper.create({
   fetchWallpapers: function(config) {
     var self = this;
     var result = self.getCacheEntry(config);
-    var method = "GET";
-    var body = undefined;
 
     if (config.maximumEntries <= result.images.length && Date.now() < result.expires) {
       self.sendResult(config);
@@ -69,8 +67,14 @@ module.exports = NodeHelper.create({
     config.source = pick(config.source);
     var source = config.source.toLowerCase();
     if (source === "firetv") {
+      if (self.firetv === null) {
+        self.firetv = JSON.parse(fs.readFileSync(`${__dirname}/firetv.json`));
+      }
       self.cacheResult(config, shuffle(self.firetv.images));
     } else if (source === "chromecast") {
+      if (self.chromecast === null) {
+        self.chromecast = JSON.parse(fs.readFileSync(`${__dirname}/chromecast.json`));
+      }
       self.cacheResult(config, shuffle(self.chromecast));
     } else if (source.startsWith("local:")) {
       self.readdir(config);
@@ -611,6 +615,7 @@ module.exports = NodeHelper.create({
       source = source[s];
     }
 
+    args.per_page = args.per_page || config.maximumEntries;
     source.getPhotos(args).then(res => {
       self.processFlickrPhotos(config, res.body[resultType].photo.map(p => {
         return {
@@ -638,7 +643,7 @@ module.exports = NodeHelper.create({
     const self = this;
     const images = [];
 
-    photos = photos.slice(0, Math.min(60, config.maximumEntries));
+    photos = photos.slice(0, Math.max(60, config.maximumEntries));
     let pendingRequests = photos.length;
 
     for (let p of photos) {
