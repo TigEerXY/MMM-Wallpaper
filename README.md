@@ -41,6 +41,8 @@ Your local changes to the following files would be overwritten by merge:
 Please commit your changes or stash them before you merge.
 ````bash
 git commit -m package-lock.json
+git stash push --include-untracked
+git stash drop
 ````
 
 ## Using the module
